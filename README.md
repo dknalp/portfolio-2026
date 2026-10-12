@@ -1,6 +1,6 @@
-# Gabriel's Portfolio
+# Dogukan's Portfolio
 
-A personal portfolio website for Gabriel, a web designer focused on clean interfaces, thoughtful typography, and motion design.
+A personal portfolio website.
 
 ## Tech Stack
 
