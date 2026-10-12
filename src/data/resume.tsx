@@ -10,7 +10,7 @@ export const DATA = {
   location: "Remote",
   locationLink: "https://www.google.com/maps/search/remote",
   description:
-    "Software engineer who knows how colors work.",
+    "Full stack software engineer. I build web apps, desktop apps, API services, automations and AI systems. Started out in web design so I care about how things look too.",
   summary:
     "I build things for the web. Background in design, so I care about how it looks too.",
   avatarUrl: "/avatar.jpg",
