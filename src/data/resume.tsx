@@ -104,7 +104,7 @@ export const DATA = {
     },
     {
       title: "Esaytech",
-      href: "",
+      href: "https://esaytech.com.tr",
       dates: "",
       active: true,
       description: "Esaytech is a healthcare and consultancy company that needed a complete digital overhaul.",
