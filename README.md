@@ -1,47 +1,67 @@
-<div align="center">
-<img alt="Portfolio" src="https://github.com/dillionverma/portfolio/assets/16860528/57ffca81-3f0a-4425-b31d-094f61725455" width="90%">
-</div>
+# Gabriel's Portfolio
 
-# Portfolio [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdillionverma%2Fportfolio)
+A personal portfolio website for Gabriel, a web designer focused on clean interfaces, thoughtful typography, and motion design.
 
-Built with next.js, [shadcn/ui](https://ui.shadcn.com/), and [magic ui](https://magicui.design/), deployed on Vercel.
+## Tech Stack
 
-# Features
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Animations:** Motion (Framer Motion)
+- **Content:** Content Collections (MDX blog)
+- **UI Primitives:** Radix UI
+- **Syntax Highlighting:** Shiki + rehype-pretty-code
+- **Icons:** Lucide React, React Icons
 
-- Setup only takes a few minutes by editing the [single config file](./src/data/resume.tsx)
-- Built using Next.js 14, React, Typescript, Shadcn/UI, TailwindCSS, Framer Motion, Magic UI
-- Includes a blog
-- Responsive for different devices
-- Optimized for Next.js and Vercel
+## Features
 
-# Getting Started Locally
+- Hero section with avatar, name, and short description
+- Projects showcase with image cards and live links
+- Blog powered by MDX with syntax-highlighted code blocks
+- Social links (GitHub, Instagram, Email)
+- Contact section
+- Dark-themed design with animated blur-fade transitions
+- Light/dark mode toggle
 
-1. Clone this repository to your local machine:
+## Project Structure
 
-   ```bash
-   git clone https://github.com/dillionverma/portfolio
-   ```
+```
+src/
+├── app/
+│   ├── page.tsx          # Home page
+│   ├── blog/             # Blog routes
+│   └── layout.tsx        # Root layout
+├── components/
+│   ├── section/          # Page sections (projects, contact, social)
+│   ├── magicui/          # Blur fade animation components
+│   ├── ui/               # Radix-based UI primitives
+│   └── ...
+└── data/
+    └── resume.tsx        # All site content (name, projects, socials, work)
+```
 
-2. Move to the cloned directory
+## Getting Started
 
-   ```bash
-   cd portfolio
-   ```
+```bash
+npm install
+npm run dev
+```
 
-3. Install dependencies:
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-   ```bash
-   pnpm install
-   ```
+## Content
 
-4. Start the local Server:
+All site content (name, description, projects, work experience, skills, social links) lives in `src/data/resume.tsx`. Edit that file to update what's displayed on the site.
 
-   ```bash
-   pnpm dev
-   ```
+## Projects Showcased
 
-5. Open the [Config file](./src/data/resume.tsx) and make changes
+| Project | URL |
+|---|---|
+| Kiwimi Studios | [kiwimi.co](https://kiwimi.co/) |
+| Turkish Airlines Demo | [turkish-airlines-mocha.vercel.app](https://turkish-airlines-mocha.vercel.app/) |
+| McLaren P1 Showcase | [mclaren-p1-showcase-beta.vercel.app](https://mclaren-p1-showcase-beta.vercel.app/) |
+| Virello | [virello-smoky.vercel.app](https://virello-smoky.vercel.app/) |
 
-# License
+## License
 
-Licensed under the [MIT license](https://github.com/dillionverma/portfolio/blob/main/LICENSE.md).
+MIT

@@ -11,10 +11,7 @@ export default function ProjectsSection() {
                 <BlurFade delay={BLUR_FADE_DELAY * 11}>
                     <div className="flex flex-col gap-y-1">
                         <h2 className="text-3xl font-semibold text-white/90 mb-1">My Projects</h2>
-                        <p className="text-sm text-zinc-400 mb-4">Here are some projects I've crafted with care</p>
-                        <p className="text-zinc-400 text-sm">
-                            {"I've worked on a variety of projects, from simple websites to complex web applications. Here are a few of my favorites."}
-                        </p>
+                        <p className="text-sm text-zinc-400 mb-4">Things I've built.</p>
                     </div>
                 </BlurFade>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

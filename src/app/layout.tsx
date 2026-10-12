@@ -21,12 +21,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Gabriel — Web Designer",
-    template: "%s | Gabriel",
+    default: "Dogukan — Software Engineer",
+    template: "%s | Dogukan",
   },
   description: "Web designer crafting beautiful digital experiences",
   openGraph: {
-    title: "Gabriel — Web Designer",
+    title: "Dogukan — Software Engineer",
     description: "Web designer crafting beautiful digital experiences",
     locale: "en_US",
     type: "website",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: "Gabriel — Web Designer",
+    title: "Dogukan — Software Engineer",
     card: "summary_large_image",
   },
 };

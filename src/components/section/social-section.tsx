@@ -1,18 +1,24 @@
 import Link from "next/link";
-import { FaGithub, FaInstagram } from "react-icons/fa6";
+import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa6";
 
 const socials = [
   {
     name: "GitHub",
-    handle: "@gabriel",
-    href: "https://github.com/GabrielPedro35",
+    handle: "@dknalp",
+    href: "https://github.com/dknalp",
     icon: FaGithub,
   },
   {
     name: "Instagram",
-    handle: "@gblecev",
-    href: "https://www.instagram.com/gblecev/",
+    handle: "@dknalp",
+    href: "https://www.instagram.com/dknalp/",
     icon: FaInstagram,
+  },
+  {
+    name: "LinkedIn",
+    handle: "@doğukan-turgut",
+    href: "https://www.linkedin.com/in/do%C4%9Fukan-turgut",
+    icon: FaLinkedin,
   },
 ];
 

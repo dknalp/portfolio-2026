@@ -25,7 +25,7 @@ export default function Page() {
             </BlurFade>
             <div className="flex flex-col gap-1 min-w-0">
               <BlurFadeText delay={BLUR_FADE_DELAY * 2} className="text-4xl md:text-5xl font-semibold text-white" yOffset={8} text={DATA.name} />
-              <BlurFadeText delay={BLUR_FADE_DELAY * 3} className="text-lg md:text-xl font-medium text-zinc-400" yOffset={8} text="Web Designer" />
+              <BlurFadeText delay={BLUR_FADE_DELAY * 3} className="text-lg md:text-xl font-medium text-zinc-400" yOffset={8} text="Software Engineer" />
               <BlurFade delay={BLUR_FADE_DELAY * 4}>
                 <p className="text-sm text-zinc-400 mt-2 max-w-2xl">{DATA.description}</p>
               </BlurFade>
