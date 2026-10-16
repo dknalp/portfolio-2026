@@ -1,3 +1,5 @@
+"use client";
+
 import { Dock, DockIcon } from "@/components/magicui/dock";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -7,8 +9,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router = useRouter();
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-4 z-30">
       <Dock className="z-50 pointer-events-auto relative h-14 p-2 w-fit mx-auto flex gap-2 bg-zinc-900/80 ring-1 ring-white/10 backdrop-blur-xl shadow-xl shadow-black/30 rounded-2xl border-0">
@@ -21,6 +25,14 @@ export default function Navbar() {
                   href={item.href}
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noopener noreferrer" : undefined}
+                  onClick={
+                    isExternal
+                      ? undefined
+                      : (event) => {
+                          event.preventDefault();
+                          router.push(item.href);
+                        }
+                  }
                 >
                   <DockIcon className="rounded-xl cursor-pointer size-full bg-zinc-800/60 p-0 text-zinc-400 hover:text-white hover:bg-zinc-700/60 transition-colors border-0">
                     <item.icon className="size-full rounded-sm overflow-hidden object-contain" />

@@ -32,22 +32,28 @@ export function BlogCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col overflow-hidden rounded-2xl bg-zinc-800/30 border-2 border-transparent hover:border-zinc-500 hover:bg-zinc-900 transition-all duration-300 h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+      className="group flex flex-row items-stretch overflow-hidden rounded-xl bg-zinc-800/30 border-2 border-transparent hover:border-zinc-500 hover:bg-zinc-900 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
     >
-      <div className="relative overflow-hidden">
+      <div
+        className="relative shrink-0 w-24 sm:w-28 self-stretch [mask-image:linear-gradient(to_right,black,transparent)] [-webkit-mask-image:linear-gradient(to_right,black,transparent)]"
+      >
         {hasImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt={title} className="w-full h-36 object-cover" />
+          <img
+            src={image}
+            alt={title}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         ) : (
           <div
             className={cn(
-              "w-full h-36 bg-gradient-to-br flex items-center justify-center",
+              "absolute inset-0 bg-gradient-to-br flex items-center justify-center",
               gradient
             )}
           >
-            <div className="w-12 h-12 rounded-xl bg-zinc-700/50 ring-1 ring-white/10 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-zinc-700/50 ring-1 ring-white/10 flex items-center justify-center">
               <svg
-                className="w-6 h-6 text-zinc-500"
+                className="w-4 h-4 text-zinc-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -63,17 +69,17 @@ export function BlogCard({
           </div>
         )}
       </div>
-      <div className="flex flex-col flex-1 p-5 gap-2">
-        <h2 className="text-base font-semibold text-white">
+      <div className="flex flex-col flex-1 min-w-0 justify-center px-4 py-3 gap-1">
+        <h2 className="text-sm font-semibold text-white truncate">
           {title}
           <ChevronRight
-            className="ml-1 inline-block size-4 text-zinc-500 opacity-0 -translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-purple-400"
+            className="ml-1 inline-block size-3.5 text-zinc-500 opacity-0 -translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-purple-400"
             aria-hidden
           />
         </h2>
         <time className="text-xs text-zinc-500">{date}</time>
         {summary ? (
-          <p className="text-sm text-zinc-400 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-zinc-400 line-clamp-1 leading-relaxed">
             {summary}
           </p>
         ) : null}

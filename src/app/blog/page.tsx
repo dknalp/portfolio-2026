@@ -1,4 +1,3 @@
-import Backdrop from "@/components/Backdrop";
 import { BlogCard } from "@/components/blog-card";
 import BlurFade from "@/components/magicui/blur-fade";
 import { allPosts } from "content-collections";
@@ -50,17 +49,11 @@ export default async function BlogPage({
   });
 
   return (
-    <main className="min-h-screen bg-[#09090b] text-[#fafafa]">
-      <Backdrop />
+    <main className="min-h-screen bg-transparent text-[#fafafa]">
       <section id="blog">
         <BlurFade delay={BLUR_FADE_DELAY}>
           <div className="flex flex-col gap-y-1">
-            <h1 className="text-3xl font-semibold text-white/90 mb-1">
-              Blog{" "}
-              <span className="ml-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/15 ring-1 ring-purple-500/30 text-purple-300 align-middle">
-                {sortedPosts.length} posts
-              </span>
-            </h1>
+ <h1 className="text-3xl font-semibold text-white/90 mb-1">Blog</h1>
             <p className="text-sm text-zinc-400 mb-4">
               My thoughts on software development, life, and more.
             </p>
@@ -69,7 +62,7 @@ export default async function BlogPage({
 
         {paginatedPosts.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-3">
               {paginatedPosts.map((post, id) => {
                 const slug = post._meta.path.replace(/\.mdx$/, "");
                 return (

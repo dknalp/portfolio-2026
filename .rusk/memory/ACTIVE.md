@@ -1,10 +1,10 @@
 # Active
 
 ## Now
-Idle. First real blog post is the McLaren P1 scroll write-up.
+Idle. Page transitions, Lenis smooth scroll, and bottom-fade z-index all landed.
 
 ## Next
-Hard-refresh `/blog` — one card should show. Open the post and skim the technical half.
+Verify transitions feel right in the browser — Home→Blog→post→back. All internal dock links now route through `useRouter().push`.
 
 ## Done
 - Wrote `content/mclaren-p1-scroll-animation.mdx` in Gabriel's voice, then the canvas/frame pipeline from the mclaren repo

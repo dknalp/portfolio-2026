@@ -1,4 +1,3 @@
-import Backdrop from "@/components/Backdrop";
 import { allPosts } from "content-collections";
 import { formatDate } from "@/lib/utils";
 import { DATA } from "@/data/resume";
@@ -123,8 +122,7 @@ export default async function Blog({
   }).replace(/</g, "\\u003c");
 
   return (
-    <main className="min-h-screen bg-[#09090b] text-[#fafafa]">
-      <Backdrop />
+    <main className="min-h-screen bg-transparent text-[#fafafa]">
       <section id="blog">
         <script
           type="application/ld+json"
