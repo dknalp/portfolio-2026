@@ -25,10 +25,10 @@ export default function ContactSection() {
 
 			{/* Content */}
 			<div className="relative flex flex-col items-center gap-5 text-center px-10 py-14">
-				<h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white">
+				<h2 className="text-3xl font-semibold text-white">
 					Get in Touch
 				</h2>
-				<p className="mx-auto max-w-lg text-zinc-400 text-balance leading-relaxed">
+				<p className="mx-auto max-w-lg text-sm text-zinc-400 text-balance leading-relaxed">
 					Have something in mind? Drop me an email at{" "}
 					<Link
 						href={`mailto:${DATA.contact.email}`}

@@ -43,7 +43,7 @@ export function SocialSection() {
               >
                 <div className="flex flex-col min-w-0">
                   <span className="text-sm font-bold text-white leading-tight truncate">{social.name}</span>
-                  <span className="text-xs text-zinc-400 mt-0.5 truncate">{social.handle}</span>
+                  <span className="text-sm text-zinc-400 mt-0.5 truncate">{social.handle}</span>
                 </div>
                 <div className="ml-3 shrink-0 group-hover:text-white transition-colors duration-200">
                   <Icon className="w-6 h-6 text-zinc-400" aria-hidden="true" />

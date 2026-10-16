@@ -1,7 +1,6 @@
 import Backdrop from "@/components/Backdrop";
 import Navbar from "@/components/navbar";
 import PageLoader from "@/components/page-loader";
-import PageTransition from "@/components/page-transition";
 import SmoothScroll from "@/components/smooth-scroll";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -71,7 +70,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
           <TooltipProvider delayDuration={0}>
             <div className="relative z-10 max-w-2xl mx-auto py-12 pb-24 sm:py-24 px-6">
-              <PageTransition>{children}</PageTransition>
+              {children}
             </div>
             <Navbar />
           </TooltipProvider>

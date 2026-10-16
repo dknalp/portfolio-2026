@@ -1,5 +1,4 @@
 import { BlogCard } from "@/components/blog-card";
-import BlurFade from "@/components/magicui/blur-fade";
 import { allPosts } from "content-collections";
 import { paginate, normalizePage } from "@/lib/pagination";
 import { formatDate } from "@/lib/utils";
@@ -21,7 +20,6 @@ export const metadata: Metadata = {
 };
 
 const PAGE_SIZE = 5;
-const BLUR_FADE_DELAY = 0.04;
 
 const pagerClass =
   "h-8 w-fit px-3 flex items-center justify-center text-sm rounded-lg bg-zinc-800/30 ring-1 ring-white/10 text-zinc-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50";
@@ -51,14 +49,12 @@ export default async function BlogPage({
   return (
     <main className="min-h-screen bg-transparent text-[#fafafa]">
       <section id="blog">
-        <BlurFade delay={BLUR_FADE_DELAY}>
-          <div className="flex flex-col gap-y-1">
- <h1 className="text-3xl font-semibold text-white/90 mb-1">Blog</h1>
-            <p className="text-sm text-zinc-400 mb-4">
-              My thoughts on software development, life, and more.
-            </p>
-          </div>
-        </BlurFade>
+        <div className="flex flex-col gap-y-1">
+          <h1 className="text-3xl font-semibold text-white/90 mb-1">Blog</h1>
+          <p className="text-sm text-zinc-400 mb-4">
+            My thoughts on software development, life, and more.
+          </p>
+        </div>
 
         {paginatedPosts.length > 0 ? (
           <>
@@ -66,72 +62,63 @@ export default async function BlogPage({
               {paginatedPosts.map((post, id) => {
                 const slug = post._meta.path.replace(/\.mdx$/, "");
                 return (
-                  <BlurFade
-                    delay={BLUR_FADE_DELAY * 2 + id * 0.05}
+                  <BlogCard
                     key={slug}
-                    className="h-full"
-                  >
-                    <BlogCard
-                      title={post.title}
-                      summary={post.summary}
-                      date={formatDate(post.publishedAt)}
-                      href={`/blog/${slug}`}
-                      image={post.image}
-                      index={id}
-                    />
-                  </BlurFade>
+                    title={post.title}
+                    summary={post.summary}
+                    date={formatDate(post.publishedAt)}
+                    href={`/blog/${slug}`}
+                    image={post.image}
+                    index={id}
+                  />
                 );
               })}
             </div>
 
             {pagination.totalPages > 1 && (
-              <BlurFade delay={BLUR_FADE_DELAY * 4}>
-                <div className="flex gap-3 flex-row items-center justify-between mt-8">
-                  <div className="text-sm text-zinc-500">
-                    Page {pagination.page} of {pagination.totalPages}
-                  </div>
-                  <div className="flex gap-2 sm:justify-end">
-                    {pagination.hasPreviousPage ? (
-                      <Link
-                        href={`/blog?page=${pagination.page - 1}`}
-                        className={`${pagerClass} hover:bg-zinc-900 hover:ring-zinc-500`}
-                      >
-                        Previous
-                      </Link>
-                    ) : (
-                      <span
-                        className={`${pagerClass} text-zinc-500 opacity-50 cursor-not-allowed`}
-                      >
-                        Previous
-                      </span>
-                    )}
-                    {pagination.hasNextPage ? (
-                      <Link
-                        href={`/blog?page=${pagination.page + 1}`}
-                        className={`${pagerClass} hover:bg-zinc-900 hover:ring-zinc-500`}
-                      >
-                        Next
-                      </Link>
-                    ) : (
-                      <span
-                        className={`${pagerClass} text-zinc-500 opacity-50 cursor-not-allowed`}
-                      >
-                        Next
-                      </span>
-                    )}
-                  </div>
+              <div className="flex gap-3 flex-row items-center justify-between mt-8">
+                <div className="text-sm text-zinc-500">
+                  Page {pagination.page} of {pagination.totalPages}
                 </div>
-              </BlurFade>
+                <div className="flex gap-2 sm:justify-end">
+                  {pagination.hasPreviousPage ? (
+                    <Link
+                      href={`/blog?page=${pagination.page - 1}`}
+                      className={`${pagerClass} hover:bg-zinc-900 hover:ring-zinc-500`}
+                    >
+                      Previous
+                    </Link>
+                  ) : (
+                    <span
+                      className={`${pagerClass} text-zinc-500 opacity-50 cursor-not-allowed`}
+                    >
+                      Previous
+                    </span>
+                  )}
+                  {pagination.hasNextPage ? (
+                    <Link
+                      href={`/blog?page=${pagination.page + 1}`}
+                      className={`${pagerClass} hover:bg-zinc-900 hover:ring-zinc-500`}
+                    >
+                      Next
+                    </Link>
+                  ) : (
+                    <span
+                      className={`${pagerClass} text-zinc-500 opacity-50 cursor-not-allowed`}
+                    >
+                      Next
+                    </span>
+                  )}
+                </div>
+              </div>
             )}
           </>
         ) : (
-          <BlurFade delay={BLUR_FADE_DELAY * 2}>
-            <div className="flex flex-col items-center justify-center py-12 px-4 rounded-2xl bg-zinc-800/30 ring-1 ring-white/10">
-              <p className="text-zinc-400 text-center">
-                No blog posts yet. Check back soon!
-              </p>
-            </div>
-          </BlurFade>
+          <div className="flex flex-col items-center justify-center py-12 px-4 rounded-2xl bg-zinc-800/30 ring-1 ring-white/10">
+            <p className="text-zinc-400 text-center">
+              No blog posts yet. Check back soon!
+            </p>
+          </div>
         )}
       </section>
     </main>

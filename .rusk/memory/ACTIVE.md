@@ -1,7 +1,7 @@
 # Active
 
 ## Now
-Idle. Page transitions, Lenis smooth scroll, and bottom-fade z-index all landed.
+Double transition fixed. Removed `mode="wait"` (exit+enter now overlap) and stripped BlurFade wrappers from page.tsx + blog/page.tsx so the route transition is the only animation.
 
 ## Next
 Verify transitions feel right in the browser — Home→Blog→post→back. All internal dock links now route through `useRouter().push`.
