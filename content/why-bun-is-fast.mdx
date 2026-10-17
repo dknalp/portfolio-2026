@@ -20,16 +20,20 @@ When you install `lodash` in three projects, npm downloads the tarball and extra
 
 Bun keeps one copy in a global cache and points each project at it. On Linux and Windows that pointer is a hardlink — the "copy" is really just a new directory entry for the same file. On macOS it uses `clonefile`, which is copy-on-write: the clone shares the original's disk blocks until something actually modifies it. Writing a few bytes of directory metadata is dramatically cheaper than writing megabytes of package contents.
 
-```
-npm, per project                    bun, all projects
+```mermaid
+flowchart LR
+    subgraph NPM["📦 npm — three full copies"]
+        N1["project-a/node_modules/lodash"]
+        N2["project-b/node_modules/lodash"]
+        N3["project-c/node_modules/lodash"]
+    end
 
-project-a/node_modules/lodash       ~/.bun/install/cache/lodash@4.17.21
-project-b/node_modules/lodash                │  │  │
-project-c/node_modules/lodash                │  │  └── project-c (hardlink)
-                                             │  └───── project-b (hardlink)
-three full copies on disk            └──────── project-a (hardlink)
-
-                                             one copy on disk
+    subgraph BUN["⚡ bun — one copy, three links"]
+        Cache["~/.bun/install/cache/lodash@4.17.21"]
+        Cache -->|hardlink| B1["project-a/node_modules/lodash"]
+        Cache -->|hardlink| B2["project-b/node_modules/lodash"]
+        Cache -->|hardlink| B3["project-c/node_modules/lodash"]
+    end
 ```
 
 To be fair, pnpm already does this. I'm not going to pretend Bun invented it. So this is a big win against npm and only a small one against pnpm. The gap that remains is in the next two sections.
@@ -42,20 +46,17 @@ Every install starts with the registry. npm and pnpm talk to the npm registry, g
 
 Bun parses it once and writes the result to a binary file at `~/.bun/install/cache/<hash>.npm`. After that, reading a package's metadata is pointer arithmetic: jump to a known byte offset, read a fixed number of bytes, done. No tokenizer, no allocations, no tree of objects to walk.
 
-```
-npm / pnpm, every run
+```mermaid
+flowchart LR
+    subgraph NPMPNPM["🔄 npm / pnpm — every run"]
+        R1["registry JSON"] --> P1["parse"] --> O1["allocate objects"] --> W1["walk"] --> D1["discard"]
+        D1 -->|next install| R1
+    end
 
-registry JSON ──▶ parse ──▶ allocate objects ──▶ walk them ──▶ throw away
-                   ▲                                            │
-                   └────────────────────────────────────────────┘
-                              same work, next install
-
-bun, second run onward
-
-~/.bun/install/cache/<hash>.npm
-┌────────┬──────────┬───────────┬──────────┐
-│ header │ version  │ deps      │ integrity│   read at a fixed offset
-└────────┴──────────┴───────────┴──────────┘   nothing to parse
+    subgraph BUNCACHE["⚡ bun — parse once"]
+        R2["registry JSON"] --> P2["parse once"] --> Bin["~/.bun/install/cache/hash.npm\n─────────────────────────\nheader · version · deps · integrity"]
+        Bin -->|"read at fixed offset\n(no parse)"| Result["done"]
+    end
 ```
 
 The cache lives for five minutes and Bun ignores the `Cache-Control` age headers the registry sends, so within that window repeat installs skip the network entirely.
@@ -68,18 +69,16 @@ npm and pnpm are JavaScript programs running on Node. When they want to read or 
 
 Bun is written in Zig and issues the system calls itself. That sounds like a small distinction until you count them. Tracing the same install: npm makes roughly 997,000 system calls and spends about 66.5% of them on `futex` — threads blocking while they wait on each other. Bun makes roughly 166,000, and only 0.46% are `futex`. Fewer calls, almost none of them just waiting around.
 
-```
-npm / pnpm                              bun
+```mermaid
+flowchart LR
+    subgraph NPMPATH["🐢 npm / pnpm  ·  ~997k syscalls, 66.5% futex"]
+        A1["JS code"] --> L["libuv thread pool"]
+        L -->|"threads block\non locks (futex)"| K1["kernel"]
+    end
 
-your code                               zig code
-   │                                       │
-   ▼                                       │  syscall, directly
-libuv thread pool                          │
-   │  threads wait on locks (futex)        ▼
-   ▼                                     kernel
-kernel
-
-~997,000 syscalls, 66.5% futex          ~166,000 syscalls, 0.46% futex
+    subgraph BUNPATH["⚡ bun  ·  ~166k syscalls, 0.46% futex"]
+        A2["Zig code"] -->|"direct syscall"| K2["kernel"]
+    end
 ```
 
 Full disclosure: those numbers are from Bun's own "Behind the scenes of bun install" blog post, not some independent audit. Take them with that in mind. But the shape makes sense: the cost isn't the copying, it's the coordination around the copying. And this is the part pnpm can't escape — it runs on Node and inherits libuv whether it wants to or not. The hardlink thing was basically a tie. This one isn't.

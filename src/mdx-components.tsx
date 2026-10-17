@@ -1,4 +1,5 @@
 import { CodeBlock } from "@/components/mdx/code-block";
+import { MermaidChart } from "@/components/mdx/mermaid-chart";
 import { MediaContainer } from "@/components/mdx/media-container";
 import type { ComponentProps } from "react";
 
@@ -8,7 +9,15 @@ type CodeProps = ComponentProps<"code"> & {
 
 export const mdxComponents = {
   MediaContainer,
-  pre: (props: ComponentProps<"pre">) => <CodeBlock {...props} />,
+  pre: (props: ComponentProps<"pre">) => {
+    const child = props.children as any;
+    const className: string = child?.props?.className ?? "";
+    if (className.includes("language-mermaid")) {
+      const code = child?.props?.children ?? "";
+      return <MermaidChart chart={String(code).trim()} />;
+    }
+    return <CodeBlock {...props} />;
+  },
   hr: (props: ComponentProps<"hr">) => (
     <div className="my-10 flex w-full items-center" {...props}>
       <div
@@ -46,4 +55,3 @@ export const mdxComponents = {
     );
   },
 } as const;
-
