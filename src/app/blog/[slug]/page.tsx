@@ -146,17 +146,7 @@ export default async function Blog({
             {post.title}
           </h1>
           <p className="text-sm text-zinc-500">{formatDate(post.publishedAt)}</p>
-          {post.image ? (
-            <div className="rounded-2xl overflow-hidden ring-1 ring-white/10 h-48 mt-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={post.image}
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : null}
-        </div>
+                  </div>
         <div className="my-6 flex w-full items-center">
           <div
             className="flex-1 h-px bg-white/10"

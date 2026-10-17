@@ -68,9 +68,7 @@ export default async function BlogPage({
                     summary={post.summary}
                     date={formatDate(post.publishedAt)}
                     href={`/blog/${slug}`}
-                    image={post.image}
-                    index={id}
-                  />
+                                      />
                 );
               })}
             </div>
