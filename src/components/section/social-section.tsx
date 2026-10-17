@@ -16,8 +16,8 @@ const socials = [
   },
   {
     name: "LinkedIn",
-    handle: "@doğukan-turgut",
-    href: "https://www.linkedin.com/in/do%C4%9Fukan-turgut",
+    handle: "@dknalp",
+    href: "https://www.linkedin.com/in/dknalp",
     icon: FaLinkedin,
   },
 ];
