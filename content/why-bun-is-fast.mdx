@@ -1,0 +1,93 @@
+---
+title: "Why Bun Is So Fast"
+publishedAt: "2026-10-17"
+author: "Dogukan Kurnaz"
+summary: "A plain-language look at why bun install beats npm and pnpm — hardlinks, a binary cache, and Zig talking straight to the kernel."
+content: "why-bun-is-fast"
+---
+
+# Why Bun Is So Fast
+
+You've seen the benchmarks. `bun install` finishes before npm has even printed its progress bar, and the gap over pnpm is smaller but still real. The tempting explanation is that someone wrote a faster package manager. The boring one is closer to the truth: Bun avoids three kinds of work that the others do on every single run.
+
+None of the three is clever on its own. Stacked together, they add up.
+
+## Files get linked, not copied
+
+When you install `lodash` in three projects, npm downloads the tarball and extracts a full copy into each project's `node_modules`. Same bytes, written to disk three times.
+
+Bun keeps one copy in a global cache and then points each project at it. On Linux and Windows that pointer is a hardlink, so the "copy" is really just a new directory entry for the same file. On macOS it uses `clonefile`, which is copy-on-write: the clone shares the original's disk blocks until something actually modifies it. Writing a few bytes of directory metadata is dramatically cheaper than writing megabytes of package contents.
+
+```
+npm, per project                    bun, all projects
+
+project-a/node_modules/lodash       ~/.bun/install/cache/lodash@4.17.21
+project-b/node_modules/lodash                │  │  │
+project-c/node_modules/lodash                │  │  └── project-c (hardlink)
+                                             │  └───── project-b (hardlink)
+three full copies on disk            └──────── project-a (hardlink)
+
+                                             one copy on disk
+```
+
+Worth saying out loud: pnpm figured this out years ago. It has its own global, content-addressed store and hardlinks into it, so this particular trick is a big win against npm and only a small one against pnpm. The gap that remains is in the next two sections.
+
+## Metadata gets read, not parsed
+
+Every install starts with the registry. npm and pnpm talk to the npm registry, get back JSON, and parse it into objects so they can figure out versions, dependencies, and integrity hashes. Then they throw those objects away. Next install, they parse the same JSON again.
+
+Bun parses it once and writes the result to a binary file at `~/.bun/install/cache/<hash>.npm`. After that, reading a package's metadata is pointer arithmetic: jump to a known byte offset, read a fixed number of bytes, done. No tokenizer, no allocations, no tree of objects to walk.
+
+```
+npm / pnpm, every run
+
+registry JSON ──▶ parse ──▶ allocate objects ──▶ walk them ──▶ throw away
+                   ▲                                            │
+                   └────────────────────────────────────────────┘
+                              same work, next install
+
+bun, second run onward
+
+~/.bun/install/cache/<hash>.npm
+┌────────┬──────────┬───────────┬──────────┐
+│ header │ version  │ deps      │ integrity│   read at a fixed offset
+└────────┴──────────┴───────────┴──────────┘   nothing to parse
+```
+
+The cache lives for five minutes and Bun ignores the `Cache-Control` age headers the registry sends, so within that window repeat installs skip the network conversation entirely.
+
+## Zig talks to the kernel directly
+
+npm and pnpm are JavaScript programs running on Node. When they want to read or write a file they don't make the system call themselves — they hand the work to libuv, Node's I/O layer, which runs it on a thread pool and coordinates those threads with locks.
+
+Bun is written in Zig and issues the system calls itself. That sounds like a small distinction until you count them. Tracing the same install, npm makes roughly 997,000 system calls and spends about 66.5% of them on `futex` — threads blocking while they wait for a lock. Bun makes roughly 166,000, and only 0.46% of those are `futex`. Fewer calls, and almost none of them spent waiting on other threads.
+
+```
+npm / pnpm                              bun
+
+your code                               zig code
+   │                                       │
+   ▼                                       │  syscall, directly
+libuv thread pool                          │
+   │  threads wait on locks (futex)        ▼
+   ▼                                     kernel
+kernel
+
+~997,000 syscalls, 66.5% futex          ~166,000 syscalls, 0.46% futex
+```
+
+Those numbers come from Bun's own write-up, "Behind the scenes of bun install," so treat them as their measurement rather than an independent audit. The shape of the result is what matters: the cost isn't the copying, it's the coordination around the copying. And this is the part pnpm can't escape, because pnpm runs on Node and inherits libuv whether it wants to or not. The hardlink advantage was a tie. This one isn't.
+
+## Bun is also a runtime
+
+Everything above is about the package manager. Separate from that, Bun replaces Node itself, and it uses JavaScriptCore — the engine in Safari — instead of V8.
+
+The two engines were tuned for different jobs. V8 spends effort on a heavy optimizing compiler that pays off once code has been running for a while, which is exactly what you want in a long-lived server. JavaScriptCore was tuned to start executing quickly. For a script or a CLI tool that runs for a few hundred milliseconds, startup time is the whole budget, and Bun tends to be around 4x faster there.
+
+Leave the process running and the story changes. Given time to warm up, V8's optimizer closes most of that gap, so a server that's been up for an hour is not where Bun's advantage lives.
+
+## The part the benchmarks skip
+
+All of this describes Bun's default install, which hoists dependencies the way npm and Yarn do. Bun also has an opt-in isolated mode that lays packages out the way pnpm does, with stricter isolation between them. That mode does more linking work, and it's slower — in at least one reported configuration, more than 50x slower. So "Bun is faster" is really "Bun's default mode is faster." Turn on the pnpm-style layout and you're giving a chunk of it back.
+
+And about the "25x faster than npm" line on Bun's site: that comes from Bun's own benchmarks, run on fixtures they chose. The mechanisms above — hardlinks, the binary metadata cache, skipping libuv — hold up when you go read the docs and the code. The exact multiplier doesn't travel well outside their setup. Believe the architecture, rerun the numbers yourself.
