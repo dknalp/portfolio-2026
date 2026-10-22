@@ -1,0 +1,60 @@
+---
+title: "How Does Gmail Know Your Username is Taken — Instantly?"
+publishedAt: "2026-10-22"
+author: "Dogukan Kurnaz"
+summary: "Gmail has 1.8 billion users. How does it check if your username is taken before you even finish typing? It's not a fast database — it's four layers of engineering stacked on top of each other."
+image: "/blog/gmail-username-intro.png"
+content: "how-gmail-knows-your-username-is-taken"
+---
+
+# How Does Gmail Know Your Username is Taken — Instantly?
+
+You type a username into Gmail's signup form. Before you've even finished typing, it tells you: *"That username is taken."*
+
+1.8 billion users. No loading spinner.
+
+I always assumed it was just a really fast database query. It's not even close.
+
+![Gmail username check overview](/blog/gmail-username-intro.png)
+
+---
+
+## Bloom Filters
+
+The first thing that runs isn't a database query. It's a Bloom filter, a tiny structure that lives in RAM and answers one question: is this username *definitely not* taken?
+
+If it says no, the UI shows available. Nothing else runs. Done in microseconds.
+
+If it says yes, it might be wrong. Bloom filters can give false positives but never false negatives. So a "yes" just means go check the real database. About 99% of queries never make it that far.
+
+![Bloom filter diagram](/blog/gmail-username-bloom.png)
+
+---
+
+## Caching
+
+When something does make it past the Bloom filter, it usually hits a cache before touching disk. RAM is about 1,000x faster than an SSD. Usernames like "john" or "alex" get checked millions of times a day, so they just live in memory permanently.
+
+![In-memory caching diagram](/blog/gmail-username-cache.png)
+
+---
+
+## Sharding
+
+The data isn't one giant table with 1.8 billion rows. It's split across many smaller databases. Type "zebra" and the system routes straight to whichever shard owns "z" usernames. The search space shrinks from billions of rows to millions.
+
+![Database sharding diagram](/blog/gmail-username-sharding.png)
+
+---
+
+## Indexing
+
+Within each shard, usernames are indexed with something like a B-Tree. Without an index you scan every row: O(n). With one it's a tree traversal: O(log n). Same idea as the index at the back of a book.
+
+![Indexing diagram](/blog/gmail-username-indexing.png)
+
+---
+
+Bloom filter kills the obvious misses instantly. Cache handles the popular ones from RAM. Shard router narrows the search. Index finds the exact row.
+
+By the time anything hits actual disk, it's rare. That's the whole trick.
